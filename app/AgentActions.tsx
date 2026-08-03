@@ -187,7 +187,7 @@ export default function AgentActions() {
           action: action.id,
           requestId: activeRequestId,
           metadata: {
-            surface: "agent_card_v0_4_security_gate",
+            surface: "agent_card_v0_6_discovery_aliases",
             label: action.label,
             clientTs: new Date().toISOString(),
           },
