@@ -10,7 +10,8 @@ Current applied niche: roofing and construction services.
 - Default branch: `main`
 - Current project URL: https://adt-roofing-card.tkch-lx.chatgpt.site
 - Latest working baseline: `v0.5-controlled-external-access`
-- GitHub status: Sites `v0.4-security-gate` source baseline was synced into this repository; `v0.5` records controlled external access validation.
+- Latest behavior test: blind agent prompt, Test 002
+- GitHub status: `v0.5` source, smoke result, and blind behavior results are recorded.
 
 ## What Exists Now
 
@@ -19,7 +20,7 @@ The current Sites project has gone through these stages:
 1. `v0.2` - agent action demo on the page and `/agent.json`.
 2. `v0.3` - server-side loop: agent action -> API -> event/request log -> status check.
 3. `v0.4-security-gate` - security gate before external access.
-4. `v0.5-controlled-external-access` - public reachability and external API smoke test passed.
+4. `v0.5-controlled-external-access` - public reachability, external API smoke test, and blind agent behavior test passed with findings.
 
 Security gate behavior:
 
@@ -57,7 +58,7 @@ Every change must answer whether it improves at least one of these stages:
 
 See [docs/DEVELOPMENT_PROCESS.md](docs/DEVELOPMENT_PROCESS.md) for the working process and API access notes.
 
-## v0.5 Smoke Result
+## v0.5 Results
 
 External smoke test on 2026-08-03:
 
@@ -71,18 +72,25 @@ External smoke test on 2026-08-03:
 
 Smoke request id: `ADT-0DD2DB04-F119`.
 
+Recorded behavior tests:
+
+- Test 001: external agent-style request submission; request id `ADT-ACB9A4EE-DF00`.
+- Test 002: blind agent prompt; request id `ADT-B1A11D03-0803`.
+
+Main Test 002 finding:
+
+- The blind agent completed a controlled action, but did not discover root `/agent.json` on its own.
+- It first checked common discovery paths such as `/.well-known/agent.json`, `/llms.txt`, `/openapi.json`, and `/.well-known/ai-plugin.json`, all of which returned `404`.
+- The agent found the API by inspecting a public JavaScript asset instead.
+- One broader metadata POST returned `500`; malformed or unexpected payloads should return stable `400` validation errors.
+
 ## Next Step
 
-Run a blind external agent behavior test:
+Prepare `v0.6-agent-discovery-aliases`:
 
-- ask a separate external agent/chat to find the roofing contractor;
-- check whether it reads `/agent.json`;
-- ask it to call a controlled action;
-- verify server logs;
-- record hallucinations, ignored constraints, and confirmed facts.
-
-First recorded behavior test:
-
-- `docs/AGENT_TESTS.md`, Test 001;
-- request id: `ADT-ACB9A4EE-DF00`;
-- result: controlled action succeeded and public status check stayed safe.
+- expose `/.well-known/agent.json` as an alias or redirect to `/agent.json`;
+- add `/llms.txt` with a short agent-readable service summary and links;
+- consider `/openapi.json` or minimal API schema documentation;
+- document allowed actions and payload examples;
+- replace unexpected JSON/metadata failures with stable `400` responses;
+- then rerun the blind agent prompt and compare discovery behavior.
