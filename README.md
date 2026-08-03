@@ -48,6 +48,16 @@ Security gate behavior:
 - `docs/DEVELOPMENT_PROCESS.md` - development process and access notes;
 - `docs/AGENT_TESTS.md` - real agent-style behavior test log;
 - `docs/IDEAS.md` - parked observations and hypotheses that are not active implementation tasks.
+- `docs/WIKI_INDEX.md` - Project Framework entrypoint for current documentation;
+- `docs/DOCUMENT_REGISTRY.md` - document map and ownership/status register;
+- `docs/AGENT_CONTEXT.md` - stable context to read before work;
+- `docs/DECISIONS.md` - decision log;
+- `docs/HYPOTHESES.md` - active and parked hypothesis register;
+- `docs/EXPERIMENTS.md` - experiment index linked to the behavior test log;
+- `docs/RELEASES.md` - release/baseline register;
+- `docs/ROADMAP.md` - current roadmap;
+- `docs/ARCHITECTURE.md` - human and agent interface architecture notes;
+- `docs/CHANGE_SPECIFICATIONS.md` - specification template and register.
 
 ## Development Principle
 
@@ -62,7 +72,7 @@ Every change must answer whether it improves at least one of these stages:
 - server-side observability;
 - safety before external exposure.
 
-See [docs/DEVELOPMENT_PROCESS.md](docs/DEVELOPMENT_PROCESS.md) for the working process and API access notes.
+See [docs/WIKI_INDEX.md](docs/WIKI_INDEX.md) for the Project Framework entrypoint and [docs/DEVELOPMENT_PROCESS.md](docs/DEVELOPMENT_PROCESS.md) for the working process and API access notes.
 
 ## v0.5 Results
 
