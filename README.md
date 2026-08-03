@@ -8,19 +8,20 @@ Current applied niche: roofing and construction services.
 
 - Repository: `moltol-hub/ADT`
 - Default branch: `main`
-- Current public project URL: https://adt-roofing-card.tkch-lx.chatgpt.site
-- Latest deployed checkpoint: `v0.4-security-gate`
-- Current GitHub status: Sites `v0.4-security-gate` source baseline is synced into this repository.
+- Current project URL: https://adt-roofing-card.tkch-lx.chatgpt.site
+- Latest working baseline: `v0.5-controlled-external-access`
+- GitHub status: Sites `v0.4-security-gate` source baseline was synced into this repository; `v0.5` records controlled external access validation.
 
 ## What Exists Now
 
-The current Sites deployment has already gone through these stages:
+The current Sites project has gone through these stages:
 
 1. `v0.2` - agent action demo on the page and `/agent.json`.
 2. `v0.3` - server-side loop: agent action -> API -> event/request log -> status check.
 3. `v0.4-security-gate` - security gate before external access.
+4. `v0.5-controlled-external-access` - public reachability and external API smoke test passed.
 
-Security gate changes already made in the deployed Sites project:
+Security gate behavior:
 
 - public write path for controlled agent actions;
 - public status check only by exact unpredictable `request_id`;
@@ -29,15 +30,16 @@ Security gate changes already made in the deployed Sites project:
 - unknown actions rejected;
 - payload size limits;
 - basic rate limiting;
-- `/agent.json` updated with API and security rules.
+- `/agent.json` documents API and security rules.
 
-The repository now contains the current product source:
+## Repository Shape
 
 - `app/` - page, UI, and agent action API route;
 - `public/agent.json` - machine-readable agent metadata;
 - `db/` and `drizzle/` - D1 schema and migration;
 - `worker/`, `vite.config.ts`, and build scripts - Sites/Worker runtime;
-- `public/photos/` - roofing/construction visual assets used by the card.
+- `public/photos/` - roofing/construction visual assets used by the card;
+- `docs/DEVELOPMENT_PROCESS.md` - development process and access notes.
 
 ## Development Principle
 
@@ -54,6 +56,26 @@ Every change must answer whether it improves at least one of these stages:
 
 See [docs/DEVELOPMENT_PROCESS.md](docs/DEVELOPMENT_PROCESS.md) for the working process and API access notes.
 
+## v0.5 Smoke Result
+
+External smoke test on 2026-08-03:
+
+- public page: `200`;
+- `/agent.json`: `200`;
+- full log read without `requestId`: `403`;
+- invalid action: `400`;
+- valid request creation: `201`;
+- status check by exact `request_id`: `200`;
+- spoofed owner email header still blocked full log read: `403`.
+
+Smoke request id: `ADT-0DD2DB04-F119`.
+
 ## Next Step
 
-Before a real external experiment, solve controlled external access and run a security smoke test from outside the owner-only environment.
+Run a real agent behavior test:
+
+- ask an external agent to find the roofing contractor;
+- check whether it reads `/agent.json`;
+- ask it to call a controlled action;
+- verify server logs;
+- record hallucinations, ignored constraints, and confirmed facts.
