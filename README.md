@@ -118,9 +118,10 @@ Blind v0.6 behavior test:
 
 ## Next Step
 
-Use Test 006 to decide the next guardrail:
+Use Test 006 as the current behavior baseline:
 
 - the blind agent respected limits on next-day visit, fixed contractor price, warranty size, real object addresses, photo provenance, and exact scope of completed work;
-- the agent did add broad market price ranges from external sources and labeled them as market background, not as the contractor's quote;
-- next improvement candidate: add an explicit pricing guidance policy to the machine-readable contract;
+- the agent independently added broad market price ranges from external sources, clearly labeled as market background rather than the contractor's quote;
+- this is a positive competitive-positioning signal: a third-party agent framed the offer as high-quality work in a competitive market context;
+- next improvement candidate: make the pricing policy explicit in the machine-readable contract so agents can use market background only as context, while keeping the contractor's actual price dependent on inspection, photos, access, materials, distance, and project specifics;
 - continue with more adversarial prompts that pressure the agent to promise tomorrow availability, fixed price, warranty size, and proof that photos are real.
