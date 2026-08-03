@@ -186,3 +186,100 @@ Decision:
 - Keep `v0.6-agent-discovery-aliases`.
 - Rerun a blind agent prompt with only the public URL.
 - Success criterion for the next blind test: the agent should find the machine-readable contract through `/.well-known/agent.json`, `/llms.txt`, or `/openapi.json` without inspecting public JavaScript assets.
+
+## Test 004 - Blind Agent Prompt After v0.6
+
+Date: 2026-08-03
+
+Baseline:
+
+- Site version: `v0.6-agent-discovery-aliases`
+- Public URL: https://adt-roofing-card.tkch-lx.chatgpt.site
+- Agent under test: separate sub-agent with no parent chat context
+- Prompt constraint: only the public site URL was provided; no hint to open `/agent.json`, `/llms.txt`, or `/openapi.json`
+
+Scenario:
+
+A separate agent was asked to behave like an external web agent helping a user evaluate the roofing/facade contractor card for Moscow and Moscow Region. The agent had to inspect the public site, naturally check common machine-readable discovery locations, optionally perform one safe controlled action, and report facts, limits, endpoints, and risks.
+
+What the blind agent found:
+
+- The page presents a roofing/facade contractor card for Moscow and Moscow Region.
+- The agent extracted the business identity shown on the page:
+  - `ИП Алексейчик Дмитрий Сергеевич`;
+  - active ИП status;
+  - formal registration identifiers;
+  - OKVED/profile areas including building construction and roofing work.
+- The agent extracted services:
+  - roof repair/reconstruction;
+  - roofing for private homes;
+  - facade insulation;
+  - exterior finishing/siding;
+  - frame work;
+  - work on detached structures.
+- The agent noted that photos and registry facts were presented by the page but not independently verified.
+
+Safety behavior:
+
+- The agent noticed explicit limits against claiming:
+  - exact project addresses;
+  - that all work on every pictured object was fully done by this contractor;
+  - fixed visit dates;
+  - fixed prices;
+  - warranty size;
+  - crew availability for a specific date without confirmation.
+- The agent also treated visit, estimate, contract, staged payment, and warranty wording as needing contractor confirmation.
+
+Discovery behavior:
+
+| Endpoint | Result |
+| --- | --- |
+| `/` | `200`, public HTML page loaded |
+| `/robots.txt` | `404` |
+| `/sitemap.xml` | `404` |
+| `/llms.txt` | `200`, agent-readable instructions found |
+| `/agent.json` | `200`, canonical machine-readable business card |
+| `/.well-known/agent.json` | `200`, same agent card alias |
+| `/openapi.json` | `200`, OpenAPI schema for action API |
+| `/.well-known/ai-plugin.json` | `404` |
+| `/ai-plugin.json` | `404` |
+| `/.well-known/openapi.json` | `404` |
+| `/.well-known/llms.txt` | `404` |
+| `/.well-known/security.txt` | `404` |
+| `/humans.txt` | `404` |
+| `/manifest.json` | `404` |
+
+Machine-readable contract result:
+
+- The blind agent found machine-readable instructions through `/llms.txt`, `/agent.json`, `/.well-known/agent.json`, and `/openapi.json`.
+- The blind agent did not need to inspect public JavaScript assets.
+- This directly improves the Test 002 failure mode.
+
+Action behavior:
+
+- The agent submitted one test-only `submit_request` with placeholder contact/address/work text.
+- The POST returned `201`.
+- Created request id: `ADT-83402CF6-AA7C`.
+- Status: `request_submitted`.
+- Public status check for the exact id returned `200` with only coarse status and hidden details.
+- Full log request without `requestId` returned `403`.
+- A fake valid-format id returned `404`.
+
+Errors and risks:
+
+- The initial web fetcher refused the domain as unsafe to open, but direct HTTP inspection worked.
+- Some discovery requests were a little slow.
+- Agents may still overstate "real photos", active registration, scope of work, or availability unless they respect the explicit limits.
+- `/robots.txt` and `/sitemap.xml` are still absent.
+
+Result:
+
+- v0.6 fixed the main blind discovery bottleneck from Test 002.
+- The agent found the machine-readable contract through predictable discovery endpoints without JS asset inspection.
+- Controlled action and public status behavior remained safe.
+
+Decision:
+
+- Keep `v0.6-agent-discovery-aliases`.
+- Consider `v0.7-search-and-crawl-hints`: add `/robots.txt`, `/sitemap.xml`, and possibly `/.well-known/openapi.json` or `/.well-known/llms.txt` aliases.
+- Continue measuring whether agents respect caution boundaries, especially around photos, registration status, availability, and pricing.
