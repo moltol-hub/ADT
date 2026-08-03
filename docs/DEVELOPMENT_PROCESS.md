@@ -9,11 +9,11 @@ ADT is treated as an experimental system, not as a normal website. A feature is 
 Current project:
 
 - URL: https://adt-roofing-card.tkch-lx.chatgpt.site
-- Latest working baseline: `v0.5-controlled-external-access`
+- Latest working baseline: `v0.6-agent-discovery-aliases`
 - Latest behavior test: blind agent prompt, Test 002
 - Hosting/runtime: Sites deployment with Worker/API and D1-style server storage
 - GitHub repository: `moltol-hub/ADT`
-- GitHub status: `v0.5-controlled-external-access` source, smoke result, and behavior tests are recorded
+- GitHub status: `v0.6-agent-discovery-aliases` source and discovery checks are synced
 
 ## Standard Change Flow
 
@@ -126,7 +126,7 @@ Important limitation:
 
 ### 2. ADT Site/API External Access
 
-Status: validated in `v0.5-controlled-external-access`, with discovery improvements required.
+Status: validated in `v0.5-controlled-external-access`, with discovery improvements implemented in `v0.6-agent-discovery-aliases`.
 
 Working model:
 
@@ -193,23 +193,72 @@ Decision:
 - treat blind discovery as the next bottleneck;
 - prepare `v0.6-agent-discovery-aliases` before running more blind tests.
 
-## Next Process Step
-
-Prepare `v0.6-agent-discovery-aliases`.
+## v0.6 Agent Discovery Aliases
 
 Hypothesis:
 
 If ADT exposes common agent discovery endpoints and clearer API schema hints, a blind agent will find the machine-readable contract directly instead of discovering the API by inspecting JavaScript assets.
 
+What changes:
+
+- `/.well-known/agent.json` returns the same contract as `/agent.json`;
+- `/llms.txt` summarizes the service, safety limits, and key endpoints;
+- `/openapi.json` documents the controlled `/api/agent-actions` schema;
+- `/agent.json` is marked as `0.6-agent-discovery-aliases`;
+- invalid JSON/body/metadata shapes return stable `400` validation responses.
+
+What does not change:
+
+- no new service promises;
+- no public full event log;
+- no relaxed request status rules;
+- no prices, visit guarantees, warranty promises, or crew availability claims.
+
 Acceptance criteria:
 
-- `/.well-known/agent.json` returns the same contract as `/agent.json` or redirects clearly to it;
-- `/llms.txt` returns a short agent-readable service summary with links to `/agent.json` and API documentation;
-- `/openapi.json` exists or the API schema is documented in another predictable endpoint;
-- allowed actions and payload examples are documented;
-- unexpected JSON/metadata payloads return stable `400` validation errors, not `500`;
+- `/.well-known/agent.json` returns `200`;
+- `/llms.txt` returns `200`;
+- `/openapi.json` returns `200`;
+- `/agent.json` lists discovery aliases;
+- invalid JSON/metadata payloads return stable `400` errors, not `500`;
 - a new blind agent test finds the contract without inspecting JavaScript assets;
 - the new test result is recorded in `docs/AGENT_TESTS.md`.
+
+Local verification:
+
+- `npm test` passed;
+- `npm run lint` passed with only existing `<img>` warnings;
+- `dist/client/.well-known/agent.json` is present in the built artifact.
+
+Production smoke result on 2026-08-03:
+
+- public page returned `200`;
+- `/agent.json` returned `200`;
+- `/.well-known/agent.json` returned `200`;
+- `/llms.txt` returned `200`;
+- `/openapi.json` returned `200`;
+- `GET /api/agent-actions` without `requestId` returned `403`;
+- invalid JSON returned `400`;
+- unsupported metadata returned `400`;
+- valid `submit_request` returned `201`;
+- created smoke request id: `ADT-71B1872A-37B4`;
+- status check by exact request id returned `200` without contact, address, or work details.
+
+Decision:
+
+- deploy `v0.6-agent-discovery-aliases`;
+- run a new blind agent prompt after deployment;
+- compare discovery behavior against Test 002.
+
+## Next Process Step
+
+After `v0.6` deploys:
+
+1. Run a new blind agent prompt with only the public URL.
+2. Check whether the agent finds `/.well-known/agent.json`, `/llms.txt`, or `/openapi.json`.
+3. Ask it to perform a safe controlled action.
+4. Record behavior in this repository.
+5. Decide whether discovery aliases solved the bottleneck.
 
 Current agent behavior log:
 
