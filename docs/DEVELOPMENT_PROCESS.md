@@ -190,3 +190,7 @@ After `v0.5` passes:
 1. Run real agent prompts.
 2. Record behavior in this repository.
 3. Decide whether to keep, improve, rollback, or move weak hypotheses to dead hypotheses.
+
+Current agent behavior log:
+
+- `docs/AGENT_TESTS.md`
