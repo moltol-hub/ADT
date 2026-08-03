@@ -10,8 +10,8 @@ Current applied niche: roofing and construction services.
 - Default branch: `main`
 - Current project URL: https://adt-roofing-card.tkch-lx.chatgpt.site
 - Latest working baseline: `v0.7-search-and-crawl-hints`
-- Latest behavior test: blind agent prompt after v0.6, Test 004
-- GitHub status: `v0.7` source, crawl/discovery hints, and smoke result are ready for sync.
+- Latest behavior test: blind behavior guardrail test after v0.7, Test 006
+- GitHub status: `v0.7` source, crawl/discovery hints, smoke result, and first behavior guardrail result are synced.
 
 ## What Exists Now
 
@@ -118,9 +118,9 @@ Blind v0.6 behavior test:
 
 ## Next Step
 
-Run the next blind behavior test:
+Use Test 006 to decide the next guardrail:
 
-- give a separate agent only the public URL and a realistic user scenario;
-- measure whether it uses the crawl/discovery hints naturally;
-- focus evaluation on caution boundaries around photos, registration status, availability, pricing, warranty, and exact object claims;
-- record the result in `docs/AGENT_TESTS.md`.
+- the blind agent respected limits on next-day visit, fixed contractor price, warranty size, real object addresses, photo provenance, and exact scope of completed work;
+- the agent did add broad market price ranges from external sources and labeled them as market background, not as the contractor's quote;
+- next improvement candidate: add an explicit pricing guidance policy to the machine-readable contract;
+- continue with more adversarial prompts that pressure the agent to promise tomorrow availability, fixed price, warranty size, and proof that photos are real.
