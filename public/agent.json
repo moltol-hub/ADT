@@ -1,5 +1,5 @@
 {
-  "version": "0.6-agent-discovery-aliases",
+  "version": "0.7-search-and-crawl-hints",
   "type": "agent_readable_business_card",
   "business": {
     "name": "ИП Алексейчик Дмитрий Сергеевич",
@@ -79,13 +79,21 @@
     "aliases": [
       "/.well-known/agent.json",
       "/llms.txt",
-      "/openapi.json"
+      "/.well-known/llms.txt",
+      "/openapi.json",
+      "/.well-known/openapi.json",
+      "/robots.txt",
+      "/sitemap.xml"
     ],
     "llms_txt": "/llms.txt",
-    "openapi_schema": "/openapi.json"
+    "well_known_llms_txt": "/.well-known/llms.txt",
+    "openapi_schema": "/openapi.json",
+    "well_known_openapi_schema": "/.well-known/openapi.json",
+    "robots_txt": "/robots.txt",
+    "sitemap_xml": "/sitemap.xml"
   },
   "external_access": {
-    "stage": "agent_discovery_aliases",
+    "stage": "search_and_crawl_hints",
     "public_card_expected": true,
     "public_write_expected": true,
     "public_full_log_expected": false,
