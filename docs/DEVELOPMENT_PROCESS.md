@@ -9,11 +9,11 @@ ADT is treated as an experimental system, not as a normal website. A feature is 
 Current project:
 
 - URL: https://adt-roofing-card.tkch-lx.chatgpt.site
-- Latest working baseline: `v0.6-agent-discovery-aliases`
-- Latest behavior test: blind agent prompt, Test 002
+- Latest working baseline: `v0.7-search-and-crawl-hints`
+- Latest behavior test: blind agent prompt after v0.6, Test 004
 - Hosting/runtime: Sites deployment with Worker/API and D1-style server storage
 - GitHub repository: `moltol-hub/ADT`
-- GitHub status: `v0.6-agent-discovery-aliases` source and discovery checks are synced
+- GitHub status: `v0.7-search-and-crawl-hints` source and smoke result should be synced
 
 ## Standard Change Flow
 
@@ -258,17 +258,70 @@ Blind behavior result on 2026-08-03:
 - Created request id: `ADT-83402CF6-AA7C`.
 - Full log remained closed with `403`.
 - Exact status check returned `200` with coarse status only.
-- Remaining discovery gaps: `/robots.txt`, `/sitemap.xml`, `/.well-known/openapi.json`, and `/.well-known/llms.txt` returned `404`.
+
+## v0.7 Search and Crawl Hints
+
+Hypothesis:
+
+If ADT exposes crawler-oriented hints and extra well-known aliases, search-style agents and crawlers will discover the public page, machine-readable contract, LLM summary, and OpenAPI schema with less trial-and-error.
+
+What changes:
+
+- `/robots.txt` points to the sitemap and machine-readable discovery resources;
+- `/sitemap.xml` lists the public page and key agent-readable resources;
+- `/.well-known/llms.txt` aliases `/llms.txt`;
+- `/.well-known/openapi.json` aliases `/openapi.json`;
+- `/agent.json` is marked as `0.7-search-and-crawl-hints`;
+- discovery aliases in `/agent.json` include crawl hints and well-known schema paths.
+
+What does not change:
+
+- no new service promises;
+- no public full event log;
+- no relaxed request status checks;
+- no prices, visit guarantees, warranty promises, or crew availability claims;
+- no change to controlled action ids.
+
+Acceptance criteria:
+
+- `/robots.txt` returns `200`;
+- `/sitemap.xml` returns `200`;
+- `/.well-known/llms.txt` returns `200`;
+- `/.well-known/openapi.json` returns `200`;
+- existing endpoints from v0.6 still return `200`;
+- `GET /api/agent-actions` without `requestId` still returns `403`;
+- invalid JSON/metadata still return stable `400`;
+- valid `submit_request` still returns `201`;
+- production smoke result is recorded in `docs/AGENT_TESTS.md`.
+
+Local verification:
+
+- `npm test` passed;
+- `npm run lint` passed with only existing `<img>` warnings.
+
+Production smoke result on 2026-08-03:
+
+- public page returned `200`;
+- `/agent.json` returned `200`;
+- `/.well-known/agent.json` returned `200`;
+- `/llms.txt` returned `200`;
+- `/.well-known/llms.txt` returned `200`;
+- `/openapi.json` returned `200`;
+- `/.well-known/openapi.json` returned `200`;
+- `/robots.txt` returned `200`;
+- `/sitemap.xml` returned `200`;
+- `GET /api/agent-actions` without `requestId` returned `403`;
+- invalid JSON returned `400`;
+- valid `submit_request` returned `201`;
+- created smoke request id: `ADT-92EF91C3-8518`;
+- status check by exact request id returned `200` without contact, address, or work details.
 
 ## Next Process Step
 
-After `v0.6` passes:
+After `v0.7` source and smoke results are synced:
 
-1. Consider `v0.7-search-and-crawl-hints`.
-2. Add `/robots.txt` and `/sitemap.xml` if we want crawlers and agents to discover the card more predictably.
-3. Consider aliases for `/.well-known/openapi.json` and `/.well-known/llms.txt`.
-4. Continue blind tests focused on whether agents respect caution boundaries, not only whether endpoints work.
-5. Record each behavior test in this repository.
+1. Run the next blind test focused on whether agents respect caution boundaries, not only whether endpoints work.
+2. Record each behavior test in this repository.
 
 Current agent behavior log:
 
