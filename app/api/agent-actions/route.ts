@@ -23,6 +23,15 @@ const REQUEST_ID_PATTERN = /^ADT-[A-F0-9]{8}-[A-F0-9]{4}$/;
 const RATE_LIMIT_WINDOW_SECONDS = 60;
 const RATE_LIMIT_MAX_EVENTS = 20;
 
+type AgentPayload = {
+  action?: unknown;
+  requestId?: unknown;
+  contact?: unknown;
+  objectAddress?: unknown;
+  workSummary?: unknown;
+  metadata?: unknown;
+};
+
 function isActionId(value: unknown): value is ActionId {
   return (
     value === "check_tomorrow_visit" ||
@@ -87,11 +96,59 @@ function sanitizeText(value: unknown): string | null {
   return normalized || null;
 }
 
-function safeMetadata(value: unknown): string | null {
-  if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+function validatePayload(value: unknown): AgentPayload | Response {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return Response.json(
+      { error: "JSON body must be an object" },
+      { status: 400 },
+    );
+  }
+
+  return value as AgentPayload;
+}
+
+function safeMetadata(value: unknown): string | null | Response {
+  if (value === undefined || value === null) return null;
+
+  if (typeof value !== "object" || Array.isArray(value)) {
+    return Response.json(
+      { error: "metadata must be an object with allowed scalar fields" },
+      { status: 400 },
+    );
+  }
 
   const input = value as Record<string, unknown>;
   const allowed: Record<string, string> = {};
+
+  for (const [key, fieldValue] of Object.entries(input)) {
+    if (!["surface", "label", "clientTs", "testMode"].includes(key)) {
+      return Response.json(
+        { error: `metadata.${key} is not allowed` },
+        { status: 400 },
+      );
+    }
+
+    if (key === "testMode") {
+      if (typeof fieldValue !== "boolean") {
+        return Response.json(
+          { error: "metadata.testMode must be boolean" },
+          { status: 400 },
+        );
+      }
+      allowed[key] = String(fieldValue);
+      continue;
+    }
+
+    if (typeof fieldValue === "string") {
+      const text = sanitizeText(fieldValue);
+      if (text) allowed[key] = text;
+    } else if (fieldValue !== undefined && fieldValue !== null) {
+      return Response.json(
+        { error: `metadata.${key} must be a string` },
+        { status: 400 },
+      );
+    }
+  }
 
   for (const key of ["surface", "label", "clientTs"]) {
     if (typeof input[key] === "string") {
@@ -270,14 +327,15 @@ export async function POST(request: Request) {
       return Response.json({ error: "payload is too large" }, { status: 413 });
     }
 
-    const payload = (await request.json()) as {
-      action?: unknown;
-      requestId?: string;
-      contact?: string;
-      objectAddress?: string;
-      workSummary?: string;
-      metadata?: Record<string, unknown>;
-    };
+    let parsedPayload: unknown;
+    try {
+      parsedPayload = await request.json();
+    } catch {
+      return Response.json({ error: "Invalid JSON body" }, { status: 400 });
+    }
+
+    const payload = validatePayload(parsedPayload);
+    if (payload instanceof Response) return payload;
 
     if (!isActionId(payload.action)) {
       return Response.json({ error: "action is required" }, { status: 400 });
@@ -297,6 +355,7 @@ export async function POST(request: Request) {
     const objectAddress = sanitizeText(payload.objectAddress);
     const workSummary = sanitizeText(payload.workSummary);
     const metadata = safeMetadata(payload.metadata);
+    if (metadata instanceof Response) return metadata;
 
     const existing = await db
       .select({ requestId: agentRequests.requestId })
