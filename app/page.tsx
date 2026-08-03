@@ -72,7 +72,7 @@ export default function Home() {
         <div className="mx-auto grid max-w-7xl gap-10 px-5 py-10 md:grid-cols-[1.05fr_0.95fr] md:px-8 md:py-16">
           <div className="flex flex-col justify-center">
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-stone-600">
-              Agent Discovery & Trust / карточка v0.4 security-gate
+              Agent Discovery & Trust / карточка v0.5 controlled external access
             </p>
             <h1 className="mt-5 max-w-3xl text-4xl font-semibold leading-tight tracking-tight text-stone-950 md:text-6xl">
               Кровельные и фасадные работы по частным домам в Москве и МО
