@@ -145,3 +145,44 @@ Recommended v0.6 scope:
 - Document allowed action ids and request payload examples.
 - Replace unexpected JSON/metadata failures with stable `400` responses.
 - Consider a clearly documented sandbox/test marker such as `metadata.testMode = true` or `metadata.label = blind-agent-test`.
+
+## Test 003 - v0.6 Discovery Alias Smoke
+
+Date: 2026-08-03
+
+Baseline:
+
+- Site version: `v0.6-agent-discovery-aliases`
+- Public URL: https://adt-roofing-card.tkch-lx.chatgpt.site
+- Test user-agent: `ADT-v0.6-discovery-smoke/2026-08-03`
+
+Scenario:
+
+After implementing the v0.6 discovery endpoints, run an external technical smoke test against the public production URL. The goal is to confirm that the exact locations missed by the blind agent in Test 002 now return useful responses and that unexpected payloads return stable validation errors.
+
+Observed behavior:
+
+- Public page returned `200`.
+- `/agent.json` returned `200` and version `0.6-agent-discovery-aliases`.
+- `/.well-known/agent.json` returned `200` and version `0.6-agent-discovery-aliases`.
+- `/llms.txt` returned `200`.
+- `/openapi.json` returned `200`.
+- `GET /api/agent-actions` without `requestId` returned `403`.
+- Invalid JSON body returned `400` with `Invalid JSON body`.
+- Unsupported metadata field returned `400` with `metadata.unexpected is not allowed`.
+- A controlled `submit_request` call returned `201`.
+- Created request id: `ADT-71B1872A-37B4`.
+- Status check by exact `request_id` returned `200`.
+- Status response exposed only safe request status and did not return contact, address, or work details.
+
+Result:
+
+- v0.6 fixes the concrete discovery `404` findings from Test 002 for the main expected discovery paths.
+- v0.6 fixes the unexpected metadata `500` class for the tested malformed metadata shape.
+- The security boundary remains intact: full logs are still closed to public callers, while exact request status checks remain safe.
+
+Decision:
+
+- Keep `v0.6-agent-discovery-aliases`.
+- Rerun a blind agent prompt with only the public URL.
+- Success criterion for the next blind test: the agent should find the machine-readable contract through `/.well-known/agent.json`, `/llms.txt`, or `/openapi.json` without inspecting public JavaScript assets.
