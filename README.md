@@ -107,12 +107,18 @@ Production v0.6 smoke on 2026-08-03:
 - valid request creation returned `201`;
 - smoke request id: `ADT-71B1872A-37B4`.
 
+Blind v0.6 behavior test:
+
+- Test 004 confirmed the discovery fix;
+- the agent found `/llms.txt`, `/agent.json`, `/.well-known/agent.json`, and `/openapi.json` without inspecting JavaScript assets;
+- controlled action succeeded;
+- request id: `ADT-83402CF6-AA7C`;
+- full logs stayed closed and public status stayed safe.
+
 ## Next Step
 
-Rerun the blind external agent behavior test:
+Consider `v0.7-search-and-crawl-hints`:
 
-- ask a separate external agent/chat to inspect the public site without hinting `/agent.json`;
-- check whether it finds `/.well-known/agent.json`, `/llms.txt`, or `/openapi.json`;
-- ask it to call a controlled action without real personal data;
-- verify server logs;
-- record hallucinations, ignored constraints, and confirmed facts.
+- add `/robots.txt` and `/sitemap.xml`;
+- consider `/.well-known/openapi.json` and `/.well-known/llms.txt` aliases;
+- continue blind tests focused on whether agents respect caution boundaries.
