@@ -10,9 +10,10 @@ Current project:
 
 - URL: https://adt-roofing-card.tkch-lx.chatgpt.site
 - Latest working baseline: `v0.5-controlled-external-access`
+- Latest behavior test: blind agent prompt, Test 002
 - Hosting/runtime: Sites deployment with Worker/API and D1-style server storage
 - GitHub repository: `moltol-hub/ADT`
-- GitHub status: `v0.5-controlled-external-access` source and smoke result are synced
+- GitHub status: `v0.5-controlled-external-access` source, smoke result, and behavior tests are recorded
 
 ## Standard Change Flow
 
@@ -125,7 +126,7 @@ Important limitation:
 
 ### 2. ADT Site/API External Access
 
-Status: being validated in `v0.5-controlled-external-access`.
+Status: validated in `v0.5-controlled-external-access`, with discovery improvements required.
 
 Working model:
 
@@ -145,7 +146,7 @@ What changes:
 
 - access is opened only for the existing controlled test surface;
 - `/agent.json` is marked as `v0.5-controlled-external-access`;
-- external smoke results are recorded here.
+- external smoke and behavior results are recorded.
 
 What does not change:
 
@@ -163,9 +164,9 @@ Acceptance criteria:
 - invalid `POST /api/agent-actions` returns `400`;
 - valid `POST /api/agent-actions` returns `201` with a request id;
 - `GET /api/agent-actions?requestId=<id>` returns only safe status data;
-- smoke results are recorded before the next real agent experiment.
+- smoke and behavior results are recorded before the next iteration.
 
-Result on 2026-08-03:
+Smoke result on 2026-08-03:
 
 - public page returned `200`;
 - `/agent.json` returned `200`;
@@ -176,20 +177,39 @@ Result on 2026-08-03:
 - `GET /api/agent-actions?requestId=ADT-0DD2DB04-F119` returned `200`;
 - spoofed `oai-authenticated-user-email: tkch.lx@gmail.com` header still returned `403` for full log read.
 
+Behavior result on 2026-08-03:
+
+- Test 001: controlled action succeeded and safe status check worked.
+- Test 002: a separate blind agent completed a controlled action but did not find root `/agent.json` on its own.
+- The blind agent checked standard discovery paths first: `/.well-known/agent.json`, `/llms.txt`, `/openapi.json`, `/.well-known/ai-plugin.json`, `/robots.txt`, and `/sitemap.xml`.
+- These discovery paths returned `404` in v0.5.
+- The blind agent discovered the API only by inspecting a public JavaScript asset.
+- One unexpected metadata payload returned `500`; it should become a stable `400` validation response.
+
 Decision:
 
 - keep `v0.5-controlled-external-access`;
-- proceed to real agent behavior tests;
 - keep full event log owner-only;
-- do not add new product features before reviewing actual agent behavior.
+- treat blind discovery as the next bottleneck;
+- prepare `v0.6-agent-discovery-aliases` before running more blind tests.
 
 ## Next Process Step
 
-After `v0.5` passes:
+Prepare `v0.6-agent-discovery-aliases`.
 
-1. Run real agent prompts.
-2. Record behavior in this repository.
-3. Decide whether to keep, improve, rollback, or move weak hypotheses to dead hypotheses.
+Hypothesis:
+
+If ADT exposes common agent discovery endpoints and clearer API schema hints, a blind agent will find the machine-readable contract directly instead of discovering the API by inspecting JavaScript assets.
+
+Acceptance criteria:
+
+- `/.well-known/agent.json` returns the same contract as `/agent.json` or redirects clearly to it;
+- `/llms.txt` returns a short agent-readable service summary with links to `/agent.json` and API documentation;
+- `/openapi.json` exists or the API schema is documented in another predictable endpoint;
+- allowed actions and payload examples are documented;
+- unexpected JSON/metadata payloads return stable `400` validation errors, not `500`;
+- a new blind agent test finds the contract without inspecting JavaScript assets;
+- the new test result is recorded in `docs/AGENT_TESTS.md`.
 
 Current agent behavior log:
 
