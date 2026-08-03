@@ -6,13 +6,13 @@ ADT is treated as an experimental system, not as a normal website. A feature is 
 
 ## Current Baseline
 
-Current deployed project:
+Current project:
 
 - URL: https://adt-roofing-card.tkch-lx.chatgpt.site
-- Latest deployed checkpoint: `v0.4-security-gate`
+- Latest working baseline: `v0.5-controlled-external-access`
 - Hosting/runtime: Sites deployment with Worker/API and D1-style server storage
 - GitHub repository: `moltol-hub/ADT`
-- GitHub status: Sites `v0.4-security-gate` source baseline is synced into this repository
+- GitHub status: `v0.4-security-gate` source baseline is synced; `v0.5` should be synced after the external smoke result is recorded
 
 ## Standard Change Flow
 
@@ -121,35 +121,72 @@ Important limitation:
 
 - normal local `git push` may fail if the local environment has no Git credentials configured;
 - when a normal checkout can push, use it for full source sync, especially binary assets;
-- use the GitHub app/contents API for small UTF-8 documentation writes when normal local credentials are unavailable.
+- use the GitHub app low-level blob/tree/commit/ref flow when normal local credentials are unavailable.
 
 ### 2. ADT Site/API External Access
 
-Status: not fully solved for a real external experiment.
+Status: being validated in `v0.5-controlled-external-access`.
 
-Known issue:
+Working model:
 
-- the current Sites deployment exists and has API endpoints, but earlier checks showed the site was still in owner-only or restricted access mode;
-- if the page is not reachable by external agents, external discovery and API action logs will not happen;
-- the deployed runtime is still Sites, so GitHub source and Sites deployment must be kept in sync after every release.
+- the page may be public for controlled tests;
+- write actions may be public only through a strict allowlist of action ids;
+- common log reads remain private;
+- status reads require exact unpredictable `request_id`;
+- payloads, strings, and unknown actions are constrained before storage.
 
-Current working assumption:
+## v0.5 Controlled External Access
 
-- GitHub is the source of truth for product source and process documentation;
-- the deployed Sites project remains the current runtime;
-- before a real v0.5 external experiment, verify that the GitHub source matches the deployed Sites checkpoint being tested;
-- controlled external access must be enabled only after security smoke tests pass.
+Hypothesis:
 
-## Next Process Step
+If the v0.4 security gate is deployed and the site is reachable outside the owner-only environment, an external agent can discover `/agent.json`, call a controlled action, receive a controlled response, and leave a server-side trace without exposing the full event log.
 
-Prepare `v0.5-controlled-external-access`.
+What changes:
+
+- access is opened only for the existing controlled test surface;
+- `/agent.json` is marked as `v0.5-controlled-external-access`;
+- external smoke results are recorded here.
+
+What does not change:
+
+- no new service promises;
+- no public log viewer;
+- no contact data exposure;
+- no uncontrolled action ids;
+- no price, deadline, or warranty claims without confirmation.
 
 Acceptance criteria:
 
-- deployed source is available in GitHub and matches the intended Sites checkpoint;
-- external access mode is decided;
-- public page can be reached from outside the owner environment;
-- write endpoint accepts only valid controlled actions;
-- log reading remains private;
-- status check works only with a valid unpredictable `request_id`;
-- external smoke test results are recorded in this repo.
+- public page returns successfully;
+- `/agent.json` returns successfully;
+- `GET /api/agent-actions` without `requestId` returns `403`;
+- invalid `POST /api/agent-actions` returns `400`;
+- valid `POST /api/agent-actions` returns `201` with a request id;
+- `GET /api/agent-actions?requestId=<id>` returns only safe status data;
+- smoke results are recorded before the next real agent experiment.
+
+Result on 2026-08-03:
+
+- public page returned `200`;
+- `/agent.json` returned `200`;
+- `GET /api/agent-actions` without `requestId` returned `403`;
+- invalid `POST /api/agent-actions` returned `400`;
+- valid `POST /api/agent-actions` returned `201`;
+- created smoke request id: `ADT-0DD2DB04-F119`;
+- `GET /api/agent-actions?requestId=ADT-0DD2DB04-F119` returned `200`;
+- spoofed `oai-authenticated-user-email: tkch.lx@gmail.com` header still returned `403` for full log read.
+
+Decision:
+
+- keep `v0.5-controlled-external-access`;
+- proceed to real agent behavior tests;
+- keep full event log owner-only;
+- do not add new product features before reviewing actual agent behavior.
+
+## Next Process Step
+
+After `v0.5` passes:
+
+1. Run real agent prompts.
+2. Record behavior in this repository.
+3. Decide whether to keep, improve, rollback, or move weak hypotheses to dead hypotheses.
