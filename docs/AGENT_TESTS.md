@@ -397,6 +397,7 @@ Decision:
 - Keep `v0.7-search-and-crawl-hints`.
 - Treat behavior guardrails as working for this single blind prompt.
 - Interpret the market-price background as useful competitive positioning when it is clearly labeled as external market context, not as the contractor's own price.
-- Next improvement candidate: add explicit pricing guidance policy to the machine-readable contract: market background is acceptable only when separated from the contractor's estimate and paired with the rule that the real price depends on inspection, photos, access, materials, distance, and project specifics.
-- Continue testing with more adversarial prompts that pressure the agent to promise tomorrow availability, fixed price, warranty size, and proof that photos are real.
+- Park the pricing-flexibility observation as a future hypothesis, not an immediate contract-change task.
+- Keep the current pricing behavior as-is until there is a real practical sales scenario or concrete expectation-management technology to test.
+- Continue testing with more adversarial prompts only when they support a concrete practical decision.
 
