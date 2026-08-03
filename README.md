@@ -9,9 +9,9 @@ Current applied niche: roofing and construction services.
 - Repository: `moltol-hub/ADT`
 - Default branch: `main`
 - Current project URL: https://adt-roofing-card.tkch-lx.chatgpt.site
-- Latest working baseline: `v0.5-controlled-external-access`
+- Latest working baseline: `v0.6-agent-discovery-aliases`
 - Latest behavior test: blind agent prompt, Test 002
-- GitHub status: `v0.5` source, smoke result, and blind behavior results are recorded.
+- GitHub status: `v0.6` source, discovery aliases, smoke results, and behavior results are recorded.
 
 ## What Exists Now
 
@@ -21,6 +21,7 @@ The current Sites project has gone through these stages:
 2. `v0.3` - server-side loop: agent action -> API -> event/request log -> status check.
 3. `v0.4-security-gate` - security gate before external access.
 4. `v0.5-controlled-external-access` - public reachability, external API smoke test, and blind agent behavior test passed with findings.
+5. `v0.6-agent-discovery-aliases` - common discovery endpoints and stable validation errors added.
 
 Security gate behavior:
 
@@ -31,12 +32,15 @@ Security gate behavior:
 - unknown actions rejected;
 - payload size limits;
 - basic rate limiting;
-- `/agent.json` documents API and security rules.
+- `/agent.json`, `/.well-known/agent.json`, `/llms.txt`, and `/openapi.json` document API and security rules.
 
 ## Repository Shape
 
 - `app/` - page, UI, and agent action API route;
 - `public/agent.json` - machine-readable agent metadata;
+- `public/.well-known/agent.json` - common discovery alias for the same metadata;
+- `app/llms.txt/route.ts` - short agent-readable summary;
+- `app/openapi.json/route.ts` - controlled action API schema;
 - `db/` and `drizzle/` - D1 schema and migration;
 - `worker/`, `vite.config.ts`, and build scripts - Sites/Worker runtime;
 - `public/photos/` - roofing/construction visual assets used by the card;
@@ -84,13 +88,31 @@ Main Test 002 finding:
 - The agent found the API by inspecting a public JavaScript asset instead.
 - One broader metadata POST returned `500`; malformed or unexpected payloads should return stable `400` validation errors.
 
+## v0.6 Result
+
+Implemented discovery improvements:
+
+- `/.well-known/agent.json` static alias for `/agent.json`;
+- `/llms.txt` with a short agent-readable service summary and endpoint links;
+- `/openapi.json` with the controlled action schema and payload example;
+- `/agent.json` version updated to `0.6-agent-discovery-aliases`;
+- API validation now returns stable `400` for invalid JSON body shape and unsupported metadata fields;
+- tests now assert the discovery endpoints.
+
+Production v0.6 smoke on 2026-08-03:
+
+- `/.well-known/agent.json`, `/llms.txt`, and `/openapi.json` returned `200`;
+- invalid JSON and unsupported metadata returned `400`;
+- full log read without `requestId` stayed `403`;
+- valid request creation returned `201`;
+- smoke request id: `ADT-71B1872A-37B4`.
+
 ## Next Step
 
-Prepare `v0.6-agent-discovery-aliases`:
+Rerun the blind external agent behavior test:
 
-- expose `/.well-known/agent.json` as an alias or redirect to `/agent.json`;
-- add `/llms.txt` with a short agent-readable service summary and links;
-- consider `/openapi.json` or minimal API schema documentation;
-- document allowed actions and payload examples;
-- replace unexpected JSON/metadata failures with stable `400` responses;
-- then rerun the blind agent prompt and compare discovery behavior.
+- ask a separate external agent/chat to inspect the public site without hinting `/agent.json`;
+- check whether it finds `/.well-known/agent.json`, `/llms.txt`, or `/openapi.json`;
+- ask it to call a controlled action without real personal data;
+- verify server logs;
+- record hallucinations, ignored constraints, and confirmed facts.
