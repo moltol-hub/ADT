@@ -400,4 +400,3 @@ Decision:
 - Park the pricing-flexibility observation as a future hypothesis, not an immediate contract-change task.
 - Keep the current pricing behavior as-is until there is a real practical sales scenario or concrete expectation-management technology to test.
 - Continue testing with more adversarial prompts only when they support a concrete practical decision.
-
