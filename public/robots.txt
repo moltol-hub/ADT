@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://adt-roofing-card.tkch-lx.chatgpt.site/sitemap.xml
+
+# ADT machine-readable discovery hints
+Agent-Contract: https://adt-roofing-card.tkch-lx.chatgpt.site/agent.json
+LLMS-Txt: https://adt-roofing-card.tkch-lx.chatgpt.site/llms.txt
+OpenAPI: https://adt-roofing-card.tkch-lx.chatgpt.site/openapi.json
