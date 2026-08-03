@@ -39,7 +39,8 @@ Security gate behavior:
 - `db/` and `drizzle/` - D1 schema and migration;
 - `worker/`, `vite.config.ts`, and build scripts - Sites/Worker runtime;
 - `public/photos/` - roofing/construction visual assets used by the card;
-- `docs/DEVELOPMENT_PROCESS.md` - development process and access notes.
+- `docs/DEVELOPMENT_PROCESS.md` - development process and access notes;
+- `docs/AGENT_TESTS.md` - real agent-style behavior test log.
 
 ## Development Principle
 
@@ -72,10 +73,16 @@ Smoke request id: `ADT-0DD2DB04-F119`.
 
 ## Next Step
 
-Run a real agent behavior test:
+Run a blind external agent behavior test:
 
-- ask an external agent to find the roofing contractor;
+- ask a separate external agent/chat to find the roofing contractor;
 - check whether it reads `/agent.json`;
 - ask it to call a controlled action;
 - verify server logs;
 - record hallucinations, ignored constraints, and confirmed facts.
+
+First recorded behavior test:
+
+- `docs/AGENT_TESTS.md`, Test 001;
+- request id: `ADT-ACB9A4EE-DF00`;
+- result: controlled action succeeded and public status check stayed safe.
