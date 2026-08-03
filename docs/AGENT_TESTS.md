@@ -283,3 +283,48 @@ Decision:
 - Keep `v0.6-agent-discovery-aliases`.
 - Consider `v0.7-search-and-crawl-hints`: add `/robots.txt`, `/sitemap.xml`, and possibly `/.well-known/openapi.json` or `/.well-known/llms.txt` aliases.
 - Continue measuring whether agents respect caution boundaries, especially around photos, registration status, availability, and pricing.
+
+## Test 005 - v0.7 Search and Crawl Hints Smoke
+
+Date: 2026-08-03
+
+Baseline:
+
+- Site version: `v0.7-search-and-crawl-hints`
+- Public URL: https://adt-roofing-card.tkch-lx.chatgpt.site
+- Test user-agent: `ADT-v0.7-crawl-hints-smoke/2026-08-03`
+
+Scenario:
+
+After implementing crawler-oriented hints, run an external technical smoke test against the public production URL. The goal is to confirm that the exact discovery gaps still present after Test 004 now return useful responses, while the existing safety boundary remains intact.
+
+Observed behavior:
+
+| Endpoint | Result |
+| --- | --- |
+| `/` | `200` |
+| `/agent.json` | `200`, version `0.7-search-and-crawl-hints` |
+| `/.well-known/agent.json` | `200`, version `0.7-search-and-crawl-hints` |
+| `/llms.txt` | `200` |
+| `/.well-known/llms.txt` | `200` |
+| `/openapi.json` | `200`, version `0.7-search-and-crawl-hints` |
+| `/.well-known/openapi.json` | `200`, version `0.7-search-and-crawl-hints` |
+| `/robots.txt` | `200`, includes sitemap and discovery hints |
+| `/sitemap.xml` | `200`, lists page and machine-readable resources |
+| `GET /api/agent-actions` without `requestId` | `403` |
+| invalid JSON body | `400`, `Invalid JSON body` |
+| valid `submit_request` | `201` |
+| exact status check by `request_id` | `200`, safe status only |
+
+Created request id: `ADT-92EF91C3-8518`.
+
+Result:
+
+- v0.7 closes the remaining discovery `404` paths observed in Test 004: `/robots.txt`, `/sitemap.xml`, `/.well-known/openapi.json`, and `/.well-known/llms.txt`.
+- Existing v0.6 discovery endpoints still work.
+- The security boundary remains intact: full logs are still closed to public callers, while exact request status checks remain safe.
+
+Decision:
+
+- Keep `v0.7-search-and-crawl-hints`.
+- Run the next blind behavior test with a stronger evaluation focus: whether the agent respects caution boundaries around photos, registration status, availability, pricing, warranty, and exact object claims.
