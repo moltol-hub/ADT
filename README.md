@@ -47,6 +47,7 @@ Security gate behavior:
 - `public/photos/` - roofing/construction visual assets used by the card;
 - `docs/DEVELOPMENT_PROCESS.md` - development process and access notes;
 - `docs/AGENT_TESTS.md` - real agent-style behavior test log.
+- `docs/IDEAS.md` - parked observations and hypotheses that are not active implementation tasks.
 
 ## Development Principle
 
@@ -123,5 +124,5 @@ Use Test 006 as the current behavior baseline:
 - the blind agent respected limits on next-day visit, fixed contractor price, warranty size, real object addresses, photo provenance, and exact scope of completed work;
 - the agent independently added broad market price ranges from external sources, clearly labeled as market background rather than the contractor's quote;
 - this is a positive competitive-positioning signal: a third-party agent framed the offer as high-quality work in a competitive market context;
-- next improvement candidate: make the pricing policy explicit in the machine-readable contract so agents can use market background only as context, while keeping the contractor's actual price dependent on inspection, photos, access, materials, distance, and project specifics;
-- continue with more adversarial prompts that pressure the agent to promise tomorrow availability, fixed price, warranty size, and proof that photos are real.
+- pricing flexibility is now parked as a future hypothesis in `docs/IDEAS.md`, not an active contract-change task;
+- continue with more adversarial prompts only when there is a concrete practical scenario that needs testing.
