@@ -4,7 +4,7 @@ const schema = {
   openapi: "3.1.0",
   info: {
     title: "ADT Roofing Agent Actions API",
-    version: "0.6-agent-discovery-aliases",
+    version: "0.7-search-and-crawl-hints",
     description:
       "Controlled action API for the ADT roofing agent-card experiment.",
   },
