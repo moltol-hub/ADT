@@ -47,7 +47,7 @@ Security gate behavior:
 - `public/photos/` - roofing/construction visual assets used by the card;
 - `docs/DEVELOPMENT_PROCESS.md` - development process and access notes;
 - `docs/AGENT_TESTS.md` - real agent-style behavior test log;
-- `docs/IDEAS.md` - parked observations and hypotheses that are not active implementation tasks.
+- `docs/IDEAS.md` - parked observations and hypotheses that are not active implementation tasks;
 - `docs/WIKI_INDEX.md` - Project Framework entrypoint for current documentation;
 - `docs/DOCUMENT_REGISTRY.md` - document map and ownership/status register;
 - `docs/AGENT_CONTEXT.md` - stable context to read before work;
