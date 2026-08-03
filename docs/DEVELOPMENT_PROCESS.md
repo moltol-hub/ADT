@@ -12,7 +12,7 @@ Current project:
 - Latest working baseline: `v0.5-controlled-external-access`
 - Hosting/runtime: Sites deployment with Worker/API and D1-style server storage
 - GitHub repository: `moltol-hub/ADT`
-- GitHub status: `v0.4-security-gate` source baseline is synced; `v0.5` should be synced after the external smoke result is recorded
+- GitHub status: `v0.5-controlled-external-access` source and smoke result are synced
 
 ## Standard Change Flow
 
