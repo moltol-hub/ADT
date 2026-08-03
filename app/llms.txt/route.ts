@@ -7,7 +7,11 @@ This public page is an experimental agent-readable business card for a roofing a
 Canonical page: /
 Machine-readable contract: /agent.json
 Common discovery alias: /.well-known/agent.json
+LLM summary alias: /.well-known/llms.txt
 OpenAPI schema: /openapi.json
+OpenAPI schema alias: /.well-known/openapi.json
+Robots hints: /robots.txt
+Sitemap: /sitemap.xml
 Controlled action endpoint: /api/agent-actions
 
 Allowed POST action ids:
