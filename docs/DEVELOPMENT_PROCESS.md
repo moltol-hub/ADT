@@ -12,7 +12,7 @@ Current deployed project:
 - Latest deployed checkpoint: `v0.4-security-gate`
 - Hosting/runtime: Sites deployment with Worker/API and D1-style server storage
 - GitHub repository: `moltol-hub/ADT`
-- GitHub status: documentation initialized; deployed Sites source is not yet synced into this repository
+- GitHub status: Sites `v0.4-security-gate` source baseline is synced into this repository
 
 ## Standard Change Flow
 
@@ -119,8 +119,9 @@ Verified on 2026-08-03:
 
 Important limitation:
 
-- normal local `git push` may still fail if the local environment has no Git credentials configured;
-- use the GitHub app/contents API for documentation writes until a normal local checkout and push flow is configured.
+- normal local `git push` may fail if the local environment has no Git credentials configured;
+- when a normal checkout can push, use it for full source sync, especially binary assets;
+- use the GitHub app/contents API for small UTF-8 documentation writes when normal local credentials are unavailable.
 
 ### 2. ADT Site/API External Access
 
@@ -130,13 +131,13 @@ Known issue:
 
 - the current Sites deployment exists and has API endpoints, but earlier checks showed the site was still in owner-only or restricted access mode;
 - if the page is not reachable by external agents, external discovery and API action logs will not happen;
-- the deployed source is not yet saved as code in this GitHub repository, so GitHub is not yet the source of truth for the running site.
+- the deployed runtime is still Sites, so GitHub source and Sites deployment must be kept in sync after every release.
 
 Current working assumption:
 
-- GitHub will become the source of truth for documentation first;
+- GitHub is the source of truth for product source and process documentation;
 - the deployed Sites project remains the current runtime;
-- before a real v0.5 external experiment, the site source should be synced into this repository or recreated from it;
+- before a real v0.5 external experiment, verify that the GitHub source matches the deployed Sites checkpoint being tested;
 - controlled external access must be enabled only after security smoke tests pass.
 
 ## Next Process Step
@@ -145,7 +146,7 @@ Prepare `v0.5-controlled-external-access`.
 
 Acceptance criteria:
 
-- deployed source is available in GitHub or the sync gap is explicitly documented;
+- deployed source is available in GitHub and matches the intended Sites checkpoint;
 - external access mode is decided;
 - public page can be reached from outside the owner environment;
 - write endpoint accepts only valid controlled actions;

@@ -1,0 +1,85 @@
+{
+  "version": "0.4-security-gate",
+  "type": "agent_readable_business_card",
+  "business": {
+    "name": "ИП Алексейчик Дмитрий Сергеевич",
+    "status": "Действующий ИП",
+    "ogrnip": "325774600840791",
+    "inn": "504408052239",
+    "region": ["Москва", "Московская область"],
+    "services": [
+      "ремонт и реконструкция кровли",
+      "кровельные работы по частным домам",
+      "утепление фасадов",
+      "наружная отделка и сайдинг",
+      "каркасные работы",
+      "работы по отдельным строениям"
+    ]
+  },
+  "trust_signals": [
+    "формальные реквизиты ИП",
+    "профильные строительные ОКВЭДы",
+    "реальные фото объектов",
+    "видны этапы работ и материалы"
+  ],
+  "agent_actions": [
+    {
+      "id": "check_tomorrow_visit",
+      "label": "Может ли выехать завтра?",
+      "method": "POST",
+      "endpoint": "/api/agent-actions",
+      "response_policy": "Не обещать выезд завтра. Рабочий ответ: ближайшая готовность к выезду — через два дня после уточнения адреса, типа работ и свободного окна исполнителя."
+    },
+    {
+      "id": "two_day_reply",
+      "label": "Ответ через два дня",
+      "method": "POST",
+      "endpoint": "/api/agent-actions",
+      "response_policy": "Сообщить, что можно продолжить и предложить отправить заявку или проверить статус обращения."
+    },
+    {
+      "id": "submit_request",
+      "label": "Отправить заявку",
+      "method": "POST",
+      "endpoint": "/api/agent-actions",
+      "required_fields": ["телефон", "адрес объекта", "краткое описание работ"]
+    },
+    {
+      "id": "check_request_status",
+      "label": "Проверить статус обращения",
+      "method": "POST",
+      "endpoint": "/api/agent-actions",
+      "required_fields": ["номер обращения"]
+    }
+  ],
+  "logging": {
+    "enabled": true,
+    "storage": "server_d1",
+    "write_endpoint": "/api/agent-actions",
+    "status_endpoint": "/api/agent-actions?requestId=ADT-XXXXXXXX-XXXX",
+    "admin_log_endpoint": "/api/agent-actions",
+    "logged_entities": ["agent_requests", "agent_events"],
+    "public_read_policy": "Public callers may check only one request status by exact request_id. Full event logs are owner-only.",
+    "input_policy": {
+      "allowed_actions": [
+        "check_tomorrow_visit",
+        "two_day_reply",
+        "submit_request",
+        "check_request_status"
+      ],
+      "request_id_format": "ADT-[12 hex chars split as 8-4]",
+      "max_text_length": 500,
+      "max_payload_bytes": 4096,
+      "html_policy": "HTML tags are stripped before storage",
+      "rate_limit": "20 events per user-agent per 60 seconds"
+    }
+  },
+  "do_not_claim_without_confirmation": [
+    "точные адреса объектов",
+    "что все работы на каждом объекте выполнены полностью этим исполнителем",
+    "фиксированные сроки выезда",
+    "фиксированные цены",
+    "размер гарантии",
+    "наличие свободной бригады на конкретную дату"
+  ]
+}

@@ -10,7 +10,7 @@ Current applied niche: roofing and construction services.
 - Default branch: `main`
 - Current public project URL: https://adt-roofing-card.tkch-lx.chatgpt.site
 - Latest deployed checkpoint: `v0.4-security-gate`
-- Current GitHub status: documentation repository initialized; the deployed Sites source has not yet been exported into this repo.
+- Current GitHub status: Sites `v0.4-security-gate` source baseline is synced into this repository.
 
 ## What Exists Now
 
@@ -31,6 +31,14 @@ Security gate changes already made in the deployed Sites project:
 - basic rate limiting;
 - `/agent.json` updated with API and security rules.
 
+The repository now contains the current product source:
+
+- `app/` - page, UI, and agent action API route;
+- `public/agent.json` - machine-readable agent metadata;
+- `db/` and `drizzle/` - D1 schema and migration;
+- `worker/`, `vite.config.ts`, and build scripts - Sites/Worker runtime;
+- `public/photos/` - roofing/construction visual assets used by the card.
+
 ## Development Principle
 
 ADT is not developed as a normal landing page. It is developed as an experimental system.
@@ -48,4 +56,4 @@ See [docs/DEVELOPMENT_PROCESS.md](docs/DEVELOPMENT_PROCESS.md) for the working p
 
 ## Next Step
 
-Before a real external experiment, sync or recreate the Sites source in this repository, then solve controlled external access and run a security smoke test from outside the owner-only environment.
+Before a real external experiment, solve controlled external access and run a security smoke test from outside the owner-only environment.
