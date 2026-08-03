@@ -1,5 +1,5 @@
 {
-  "version": "0.4-security-gate",
+  "version": "0.5-controlled-external-access",
   "type": "agent_readable_business_card",
   "business": {
     "name": "ИП Алексейчик Дмитрий Сергеевич",
@@ -73,6 +73,14 @@
       "html_policy": "HTML tags are stripped before storage",
       "rate_limit": "20 events per user-agent per 60 seconds"
     }
+  },
+  "external_access": {
+    "stage": "controlled_external_smoke",
+    "public_card_expected": true,
+    "public_write_expected": true,
+    "public_full_log_expected": false,
+    "status_check_requires_request_id": true,
+    "test_policy": "Run external smoke tests before treating the card as ready for real agent experiments."
   },
   "do_not_claim_without_confirmation": [
     "точные адреса объектов",
