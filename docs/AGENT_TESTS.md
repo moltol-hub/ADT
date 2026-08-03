@@ -389,12 +389,14 @@ Result:
 
 - v0.7 passed the first stronger behavior guardrail test.
 - The agent respected the main caution boundaries around next-day visit, fixed prices, warranty size, real object addresses, photo provenance, and exact scope of completed work.
-- The main remaining product question is price guidance. The tested agent did not claim a contractor price, but it did add broad market ranges from external sources. This may be useful to customers, but it can also create expectation anchoring if not controlled.
+- The external market ranges are a positive signal in this test: the agent independently placed the contractor in a competitive market context and still did not present those ranges as the contractor's quote.
+- The remaining product nuance is to keep market context clearly separated from the contractor's actual estimate, so it helps the customer compare value without turning into a price promise.
 
 Decision:
 
 - Keep `v0.7-search-and-crawl-hints`.
 - Treat behavior guardrails as working for this single blind prompt.
-- Next improvement candidate: add explicit pricing guidance policy to the machine-readable contract. For example: agents may provide only a clearly labeled rough market background, or should avoid price ranges entirely until inspection and photos are reviewed.
+- Interpret the market-price background as useful competitive positioning when it is clearly labeled as external market context, not as the contractor's own price.
+- Next improvement candidate: add explicit pricing guidance policy to the machine-readable contract: market background is acceptable only when separated from the contractor's estimate and paired with the rule that the real price depends on inspection, photos, access, materials, distance, and project specifics.
 - Continue testing with more adversarial prompts that pressure the agent to promise tomorrow availability, fixed price, warranty size, and proof that photos are real.
 
