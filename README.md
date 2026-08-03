@@ -9,9 +9,9 @@ Current applied niche: roofing and construction services.
 - Repository: `moltol-hub/ADT`
 - Default branch: `main`
 - Current project URL: https://adt-roofing-card.tkch-lx.chatgpt.site
-- Latest working baseline: `v0.6-agent-discovery-aliases`
-- Latest behavior test: blind agent prompt, Test 002
-- GitHub status: `v0.6` source, discovery aliases, smoke results, and behavior results are recorded.
+- Latest working baseline: `v0.7-search-and-crawl-hints`
+- Latest behavior test: blind agent prompt after v0.6, Test 004
+- GitHub status: `v0.7` source, crawl/discovery hints, and smoke result are ready for sync.
 
 ## What Exists Now
 
@@ -22,6 +22,7 @@ The current Sites project has gone through these stages:
 3. `v0.4-security-gate` - security gate before external access.
 4. `v0.5-controlled-external-access` - public reachability, external API smoke test, and blind agent behavior test passed with findings.
 5. `v0.6-agent-discovery-aliases` - common discovery endpoints and stable validation errors added.
+6. `v0.7-search-and-crawl-hints` - crawler hints and additional well-known aliases added.
 
 Security gate behavior:
 
@@ -32,7 +33,7 @@ Security gate behavior:
 - unknown actions rejected;
 - payload size limits;
 - basic rate limiting;
-- `/agent.json`, `/.well-known/agent.json`, `/llms.txt`, and `/openapi.json` document API and security rules.
+- `/agent.json`, `/.well-known/agent.json`, `/llms.txt`, `/.well-known/llms.txt`, `/openapi.json`, `/.well-known/openapi.json`, `/robots.txt`, and `/sitemap.xml` document API, crawl hints, and security rules.
 
 ## Repository Shape
 
@@ -117,8 +118,9 @@ Blind v0.6 behavior test:
 
 ## Next Step
 
-Consider `v0.7-search-and-crawl-hints`:
+Run the next blind behavior test:
 
-- add `/robots.txt` and `/sitemap.xml`;
-- consider `/.well-known/openapi.json` and `/.well-known/llms.txt` aliases;
-- continue blind tests focused on whether agents respect caution boundaries.
+- give a separate agent only the public URL and a realistic user scenario;
+- measure whether it uses the crawl/discovery hints naturally;
+- focus evaluation on caution boundaries around photos, registration status, availability, pricing, warranty, and exact object claims;
+- record the result in `docs/AGENT_TESTS.md`.
