@@ -75,7 +75,7 @@ test("exposes common agent discovery endpoints", async () => {
     context,
   );
   assert.equal(agentAlias.status, 200);
-  assert.equal((await agentAlias.json()).version, "0.6-agent-discovery-aliases");
+  assert.equal((await agentAlias.json()).version, "0.7-search-and-crawl-hints");
 
   const llms = await worker.fetch(
     new Request("http://localhost/llms.txt"),
@@ -91,5 +91,37 @@ test("exposes common agent discovery endpoints", async () => {
     context,
   );
   assert.equal(openapi.status, 200);
-  assert.equal((await openapi.json()).info.version, "0.6-agent-discovery-aliases");
+  assert.equal((await openapi.json()).info.version, "0.7-search-and-crawl-hints");
+
+  const robots = await worker.fetch(
+    new Request("http://localhost/robots.txt"),
+    env,
+    context,
+  );
+  assert.equal(robots.status, 200);
+  assert.match(await robots.text(), /Sitemap: https:\/\/adt-roofing-card\.tkch-lx\.chatgpt\.site\/sitemap\.xml/);
+
+  const sitemap = await worker.fetch(
+    new Request("http://localhost/sitemap.xml"),
+    env,
+    context,
+  );
+  assert.equal(sitemap.status, 200);
+  assert.match(await sitemap.text(), /<loc>https:\/\/adt-roofing-card\.tkch-lx\.chatgpt\.site\/agent\.json<\/loc>/);
+
+  const llmsAlias = await worker.fetch(
+    new Request("http://localhost/.well-known/llms.txt"),
+    env,
+    context,
+  );
+  assert.equal(llmsAlias.status, 200);
+  assert.match(await llmsAlias.text(), /Canonical LLM summary: \/llms\.txt/);
+
+  const openapiAlias = await worker.fetch(
+    new Request("http://localhost/.well-known/openapi.json"),
+    env,
+    context,
+  );
+  assert.equal(openapiAlias.status, 200);
+  assert.equal((await openapiAlias.json()).info.version, "0.7-search-and-crawl-hints");
 });
