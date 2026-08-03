@@ -1,5 +1,5 @@
 {
-  "version": "0.5-controlled-external-access",
+  "version": "0.6-agent-discovery-aliases",
   "type": "agent_readable_business_card",
   "business": {
     "name": "ИП Алексейчик Дмитрий Сергеевич",
@@ -74,8 +74,18 @@
       "rate_limit": "20 events per user-agent per 60 seconds"
     }
   },
+  "discovery": {
+    "canonical": "/agent.json",
+    "aliases": [
+      "/.well-known/agent.json",
+      "/llms.txt",
+      "/openapi.json"
+    ],
+    "llms_txt": "/llms.txt",
+    "openapi_schema": "/openapi.json"
+  },
   "external_access": {
-    "stage": "controlled_external_smoke",
+    "stage": "agent_discovery_aliases",
     "public_card_expected": true,
     "public_write_expected": true,
     "public_full_log_expected": false,
