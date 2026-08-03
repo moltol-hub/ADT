@@ -250,15 +250,25 @@ Decision:
 - run a new blind agent prompt after deployment;
 - compare discovery behavior against Test 002.
 
+Blind behavior result on 2026-08-03:
+
+- Test 004 confirmed the v0.6 discovery fix.
+- A separate blind agent found `/llms.txt`, `/agent.json`, `/.well-known/agent.json`, and `/openapi.json` without inspecting JavaScript assets.
+- The agent performed a safe test `submit_request`.
+- Created request id: `ADT-83402CF6-AA7C`.
+- Full log remained closed with `403`.
+- Exact status check returned `200` with coarse status only.
+- Remaining discovery gaps: `/robots.txt`, `/sitemap.xml`, `/.well-known/openapi.json`, and `/.well-known/llms.txt` returned `404`.
+
 ## Next Process Step
 
-After `v0.6` deploys:
+After `v0.6` passes:
 
-1. Run a new blind agent prompt with only the public URL.
-2. Check whether the agent finds `/.well-known/agent.json`, `/llms.txt`, or `/openapi.json`.
-3. Ask it to perform a safe controlled action.
-4. Record behavior in this repository.
-5. Decide whether discovery aliases solved the bottleneck.
+1. Consider `v0.7-search-and-crawl-hints`.
+2. Add `/robots.txt` and `/sitemap.xml` if we want crawlers and agents to discover the card more predictably.
+3. Consider aliases for `/.well-known/openapi.json` and `/.well-known/llms.txt`.
+4. Continue blind tests focused on whether agents respect caution boundaries, not only whether endpoints work.
+5. Record each behavior test in this repository.
 
 Current agent behavior log:
 
