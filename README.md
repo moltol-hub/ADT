@@ -46,7 +46,7 @@ Security gate behavior:
 - `worker/`, `vite.config.ts`, and build scripts - Sites/Worker runtime;
 - `public/photos/` - roofing/construction visual assets used by the card;
 - `docs/DEVELOPMENT_PROCESS.md` - development process and access notes;
-- `docs/AGENT_TESTS.md` - real agent-style behavior test log.
+- `docs/AGENT_TESTS.md` - real agent-style behavior test log;
 - `docs/IDEAS.md` - parked observations and hypotheses that are not active implementation tasks.
 
 ## Development Principle
